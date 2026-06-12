@@ -1,1 +1,304 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اتاق آشوب</title>
 
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:tahoma,sans-serif;
+    overflow:hidden;
+    height:100vh;
+    color:white;
+    transition:1s;
+}
+
+.bg{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(45deg,#ff0080,#7928ca,#00d4ff);
+    background-size:400% 400%;
+    animation:gradient 10s infinite;
+    z-index:-2;
+}
+
+@keyframes gradient{
+    0%{background-position:0 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0 50%;}
+}
+
+.noise{
+    position:fixed;
+    inset:0;
+    opacity:.05;
+    background-image:
+    radial-gradient(circle,#fff 1px,transparent 1px);
+    background-size:25px 25px;
+    z-index:-1;
+}
+
+.container{
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:20px;
+}
+
+h1{
+    font-size:4rem;
+    margin-bottom:15px;
+    text-shadow:0 0 20px white;
+}
+
+p{
+    max-width:700px;
+    line-height:2;
+    margin-bottom:30px;
+}
+
+button{
+    padding:15px 30px;
+    border:none;
+    border-radius:50px;
+    cursor:pointer;
+    font-size:18px;
+    font-weight:bold;
+    transition:.3s;
+}
+
+#chaosBtn{
+    background:white;
+    color:black;
+}
+
+#chaosBtn:hover{
+    transform:scale(1.1);
+}
+
+#message{
+    margin-top:25px;
+    font-size:1.2rem;
+    min-height:50px;
+}
+
+#escapeBtn{
+    position:absolute;
+    padding:10px 20px;
+    background:red;
+    color:white;
+}
+
+.secret{
+    position:absolute;
+    width:30px;
+    height:30px;
+    border-radius:50%;
+    opacity:0;
+    cursor:pointer;
+}
+
+#secret1{
+    top:15%;
+    left:10%;
+}
+
+#secret2{
+    bottom:20%;
+    right:15%;
+}
+
+.popup{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(0,0,0,.85);
+    padding:30px;
+    border-radius:20px;
+    display:none;
+    max-width:500px;
+    text-align:center;
+}
+
+.popup button{
+    margin-top:15px;
+}
+
+.floating{
+    position:absolute;
+    pointer-events:none;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(120vh) rotate(720deg);
+        opacity:0;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="noise"></div>
+
+<div class="container">
+    <h1>🌀 اتاق آشوب</h1>
+
+    <p>
+        به عجیب‌ترین سایت اینترنت خوش آمدی.
+        هیچ‌چیز اینجا منطقی نیست.
+        هر کلیک ممکن است واقعیت را تغییر دهد...
+    </p>
+
+    <button id="chaosBtn">روی من کلیک نکن!</button>
+
+    <div id="message"></div>
+</div>
+
+<button id="escapeBtn">خروج اضطراری</button>
+
+<div class="secret" id="secret1"></div>
+<div class="secret" id="secret2"></div>
+
+<div class="popup" id="popup">
+    <h2>🎉 راز پیدا شد!</h2>
+    <p>تو یکی از اتاق‌های مخفی را پیدا کردی.</p>
+    <button onclick="closePopup()">بستن</button>
+</div>
+
+<script>
+
+const messages = [
+"👀 کسی دارد تو را تماشا می‌کند...",
+"🤖 من یک هوش مصنوعی مشکوکم.",
+"🌌 آیا مطمئنی این سایت واقعی است؟",
+"🦄 یک اسب تک‌شاخ از کنار صفحه رد شد.",
+"🚀 تو وارد بعد دیگری شدی.",
+"🎭 حقیقت پنهان است.",
+"🐙 اختاپوس اینترنت سلام رساند.",
+"⚠️ میزان آشوب افزایش یافت."
+];
+
+const colors = [
+["#ff0080","#7928ca","#00d4ff"],
+["#ff512f","#dd2476","#ff9966"],
+["#00c9ff","#92fe9d","#38ef7d"],
+["#f7971e","#ffd200","#ff6a00"],
+["#00f260","#0575e6","#00d2ff"]
+];
+
+const chaosBtn = document.getElementById("chaosBtn");
+const msg = document.getElementById("message");
+
+chaosBtn.addEventListener("click", ()=>{
+
+    msg.innerHTML =
+        messages[Math.floor(Math.random()*messages.length)];
+
+    const c =
+      colors[Math.floor(Math.random()*colors.length)];
+
+    document.querySelector(".bg").style.background =
+        `linear-gradient(45deg,${c[0]},${c[1]},${c[2]})`;
+
+    rain();
+
+    if(Math.random() > 0.7){
+        alert("😵 سطح آشوب به ۹۹٪ رسید!");
+    }
+});
+
+function rain(){
+
+    const icons = ["⭐","🔥","🚀","🦄","👾","🎲","🌈","🌀"];
+
+    for(let i=0;i<25;i++){
+
+        let el = document.createElement("div");
+        el.className = "floating";
+
+        el.innerHTML =
+            icons[Math.floor(Math.random()*icons.length)];
+
+        el.style.left = Math.random()*100+"vw";
+        el.style.top = "-30px";
+        el.style.fontSize = (20+Math.random()*40)+"px";
+        el.style.animationDuration =
+            (2+Math.random()*4)+"s";
+
+        document.body.appendChild(el);
+
+        setTimeout(()=>el.remove(),6000);
+    }
+}
+
+const escapeBtn = document.getElementById("escapeBtn");
+
+document.addEventListener("mousemove",(e)=>{
+
+    const x = escapeBtn.offsetLeft;
+    const y = escapeBtn.offsetTop;
+
+    const dx = e.clientX - x;
+    const dy = e.clientY - y;
+
+    const distance = Math.sqrt(dx*dx + dy*dy);
+
+    if(distance < 150){
+
+        escapeBtn.style.left =
+            Math.random()*(window.innerWidth-120)+"px";
+
+        escapeBtn.style.top =
+            Math.random()*(window.innerHeight-60)+"px";
+    }
+});
+
+document.getElementById("secret1").onclick = openPopup;
+document.getElementById("secret2").onclick = openPopup;
+
+function openPopup(){
+    document.getElementById("popup").style.display="block";
+}
+
+function closePopup(){
+    document.getElementById("popup").style.display="none";
+}
+
+setInterval(()=>{
+
+    const randomText =
+      messages[Math.floor(Math.random()*messages.length)];
+
+    msg.innerHTML = randomText;
+
+},7000);
+
+document.body.addEventListener("dblclick",()=>{
+
+    document.body.style.transform =
+        `rotate(${Math.random()*4-2}deg)`;
+
+    setTimeout(()=>{
+        document.body.style.transform="rotate(0deg)";
+    },1000);
+
+});
+
+</script>
+
+</body>
+</html>
